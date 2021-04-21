@@ -2,7 +2,7 @@
   "name": "cf-logger",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "module": "dist/worker.mjs",
   "scripts": {
     "build": "webpack",
     "dev": "NODE_ENV=development npm run build",

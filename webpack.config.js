@@ -5,7 +5,7 @@ const mode = process.env.NODE_ENV || 'production'
 
 module.exports = {
   output: {
-    filename: `worker.js`,
+    filename: `worker.mjs`,
     path: path.join(__dirname, 'dist'),
   },
   mode,

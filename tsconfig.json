@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "module": "CommonJS",
-    "target": "esnext",
+    "module": "ESNext",
+    "target": "ESNext",
     "lib": ["esnext", "webworker"],
     "alwaysStrict": true,
     "strict": true,
     "preserveConstEnums": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "sourceMap": true,
     "esModuleInterop": true,
     "types": ["@cloudflare/workers-types"]
