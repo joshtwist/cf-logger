@@ -1,5 +1,5 @@
 name = "cf-logger"
-type = "webpack"
+type = "javascript"
 zone_id = ""
 account_id = "0ad2c9e474036a9096bdfa9f25fa4eb2"
 route = ""
@@ -10,3 +10,4 @@ webpack_config = "webpack.config.js"
 command = "npm install && npm run build"
 # The "modules" upload format is required for all projects that implement a Durable Object namespace.
 upload_format = "modules"
+upload.main = "./index.mjs"
