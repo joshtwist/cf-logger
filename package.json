@@ -4,7 +4,7 @@
   "description": "",
   "module": "dist/index.mjs",
   "scripts": {
-    "build": "rimraf dist && rimraf out-tsc && tsc && rollup -c rollup.config.js",
+    "build": "rimraf dist && rimraf out-tsc && tsc && rollup -c rollup.config.js && rimraf out-tsc",
     "format": "prettier --write '**/*.{ts,js,css,json,md}'"
   },
   "author": "",

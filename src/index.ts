@@ -1,5 +1,8 @@
+import { Banana } from './dep';
+
 export default {
   async fetch(request: Request, env: any) {
-    return new Response('hello from TS');
+    const b = new Banana();
+    return new Response(`hello from TS: ${b.color}`);
   }
 }
