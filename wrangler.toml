@@ -4,10 +4,8 @@ zone_id = ""
 account_id = "0ad2c9e474036a9096bdfa9f25fa4eb2"
 route = ""
 workers_dev = true
-webpack_config = "webpack.config.js"
 
 [build]
 command = "npm install && npm run build"
 # The "modules" upload format is required for all projects that implement a Durable Object namespace.
 upload_format = "modules"
-upload.main = "./index.mjs"

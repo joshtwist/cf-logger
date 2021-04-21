@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "./out-tsc",
     "module": "ESNext",
     "target": "ESNext",
     "lib": ["esnext", "webworker"],
@@ -19,5 +19,5 @@
     "./test/**/*.ts",
     "./node_modules/@cloudflare/workers-types/index.d.ts"
   ],
-  "exclude": ["node_modules/", "dist/"]
+  "exclude": ["node_modules/", "out-tsc/"]
 }

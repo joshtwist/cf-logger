@@ -2,29 +2,29 @@
   "name": "cf-logger",
   "version": "1.0.0",
   "description": "",
-  "module": "dist/worker.mjs",
+  "module": "dist/index.mjs",
   "scripts": {
-    "build": "webpack",
-    "dev": "NODE_ENV=development npm run build",
-    "format": "prettier --write '**/*.{ts,js,css,json,md}'",
-    "test:clean": "rimraf ./transpiled/src ./transpiled/test",
-    "transpile": "tsc --project ./test",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rimraf dist && rimraf out-tsc && tsc && rollup -c rollup.config.js",
+    "format": "prettier --write '**/*.{ts,js,css,json,md}'"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@cloudflare/workers-types": "^2.0.0",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.1.0",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "chai": "^4.2.0",
     "mocha": "^8.0.1",
     "prettier": "^2.0.5",
-    "rimraf": "^3.0.2",
-    "service-worker-mock": "^2.0.5",
+    "rollup": "^2.36.1",
+    "rollup-plugin-copy": "^3.3.0",
+    "rollup-plugin-terser": "^7.0.2",
     "ts-loader": "^7.0.5",
-    "typescript": "^3.9.5",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12"
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "rimraf": "^3.0.2"
   }
 }
