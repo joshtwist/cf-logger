@@ -7,5 +7,7 @@ workers_dev = true
 
 [build]
 command = "npm install && npm run build"
-# The "modules" upload format is required for all projects that implement a Durable Object namespace.
-upload_format = "modules"
+
+[build.upload]
+format = "modules"
+main = "./index.mjs"
