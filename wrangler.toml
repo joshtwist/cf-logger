@@ -10,7 +10,7 @@ command = "npm install && npm run build"
 
 [build.upload]
 format = "modules"
-main = "./dist/index.mjs"
+main = "./index.mjs"
 
 [durable_objects]
 bindings = [{ name = "LOGTOPIC", class_name = "LogTopic" }]
