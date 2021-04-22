@@ -4,7 +4,7 @@
   "description": "",
   "module": "dist/index.mjs",
   "scripts": {
-    "build": "rimraf dist && rimraf out-tsc && tsc && rollup -c rollup.config.js && rimraf out-tsc",
+    "build": "rimraf dist && rimraf out-tsc && tsc && rollup -c rollup.config.js",
     "format": "prettier --write '**/*.{ts,js,css,json,md}'"
   },
   "author": "",
@@ -14,8 +14,8 @@
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.1.0",
     "@types/chai": "^4.2.11",
-    "@types/is-even": "^1.0.0",
     "@types/mocha": "^7.0.2",
+    "@types/uuid": "^8.3.0",
     "chai": "^4.2.0",
     "mocha": "^8.0.1",
     "prettier": "^2.0.5",
@@ -26,7 +26,8 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
-    "is-even": "^1.0.0",
-    "rimraf": "^3.0.2"
+    "itty-router": "^2.3.6",
+    "rimraf": "^3.0.2",
+    "uuid": "^8.3.2"
   }
 }
