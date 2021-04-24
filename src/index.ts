@@ -1,22 +1,27 @@
 import { Router } from "itty-router";
 import { v4 as uuidv4 } from "uuid";
 import { LogEngine } from "./LogEngine";
-import { handleWebSocketError } from "./WebSocketHelper";
-import { LogTopic } from "./LogTopic"
+import { wrapForWebSocketError } from "./WebSocketHelper";
+import { CorsHelper } from "./CorsHelper";
+import { LogTopic } from "./LogTopic";
+import { HTML } from "./html";
 
 const defaultRuntimeId = "not-initialized";
 let runtimeId = defaultRuntimeId;
 const router = Router();
 const logEngine = new LogEngine();
+const corsHelper = new CorsHelper();
 
 router.get(
   "/",
   () =>
     new Response(
-      `Hello from instance ${runtimeId} @ ${new Date().toISOString()}`
+      HTML, { headers: { "Content-Type" : "text/html" }}
     )
 );
 router.post("/log/:topicId", logEngine.postHandler);
+router.get("/listen/:topicId", logEngine.listenHandler);
+router.all("*", () => new Response('Not found', { status: 404}));
 
 const mod = {
   initialize() {
@@ -27,16 +32,21 @@ const mod = {
 
   async fetch(request: Request, env: any) {
     this.initialize();
+
     try {
-      return await handleWebSocketError(r => {
-        return router.handle(r)
-      }, request);
+      const inner = async (request: Request) => {
+        return router.handle(request, env);
+      };
+      const corsWrapped = corsHelper.wrapRequestHandler(inner);
+      const wsWrapped = wrapForWebSocketError(corsWrapped);
+      return await wsWrapped(request);
     } catch (err) {
       const data = {
         ERROR: {
           description: err.description,
           stack: err.stack,
           message: err.message,
+          runtimeId,
         },
       };
       const response = new Response(JSON.stringify(data), { status: 500 });
@@ -46,5 +56,4 @@ const mod = {
   },
 };
 
-export { LogTopic, mod as default }
-
+export { LogTopic, mod as default };

@@ -1,14 +1,7 @@
-const { Router } = require('itty-router');
+const re = /\/listen\/(\S*)?/g;
+const s = "/listen/foo";
+console.log(s.match(re));
 
+var p = re.exec(s);
 
-const router = Router();
-
-router.post('/:foo', req => {
-  console.log('hello');
-  console.log(req);
-});
-
-
-const route = router.handle({ url: 'https://example.com/pos', method: 'POST'});
-
-console.log(route);
+console.log(p);

@@ -1,35 +1,59 @@
-import { WebSocketHelper } from './WebSocketHelper';
-import { v4 as uuidv4 } from 'uuid';
+import { WebSocketHelper } from "./WebSocketHelper";
 
-export class LogTopic {
-  constructor(state: any, env: any) {
-  
+export class LogTopic implements DurableObject {
+
+  constructor(state: DurableObjectState, env: any) {
+    this.state = state;
+    this.env = env;
     this.wsh = new WebSocketHelper();
-  
-    this.wsh.addMessageListener((message, session) => {
-      // TODO 
-      // Broadcast to listeners as appropriate
-    });
   }
 
-  wsh : WebSocketHelper;
+  wsh: WebSocketHelper; 
+  state: DurableObjectState;
+  env: any;
 
-  async fetch(request: Request) {
+  async fetch(request: Request) {    
+    
     const path = new URL(request.url).pathname;
 
-    if (path !== '/listen' || request.headers.get('Upgrade') != 'websocket') {
-      return new Response('Not found', {
-        status: 404,
-        headers: {
-          pathname: path,
-          upgrade: request.headers.get('Upgrade') || '',
-        },
-      });
+    if (path.includes("/listen")) {
+      return await this.handleWebSocket(request);
     }
+    else if (path.includes("/log")) {
+      return await this.handleLog(request); 
+    }
+    else {
+      return new Response("Not found", { status: 404 });
+    }
+  }
 
-    // TODO probably need a better client ID?
-    const clientId = uuidv4();
+  async handleLog(request: Request) {
+    const body = await request.text();
+    this.wsh.broadcast(body);
+    return new Response("Ack :)");
+  }
 
-    return await this.wsh.handleWebSocketUpgrade(request, clientId);
+  async handleWebSocket(request: Request) {
+    const path = new URL(request.url).pathname;
+    const re = /^\/listen\/(\S*)$/g;
+      const match = re.exec(path);
+      if (!match) {
+        throw new Error(`Invalid Topic ID on URL: ${path}`);
+      }
+      const topicId = match[1];
+  
+      if (request.headers.get('Upgrade') != 'websocket') {
+        return new Response('Not found', {
+          status: 404,
+          headers: {
+            pathname: path,
+            upgrade: request.headers.get('Upgrade') || '',
+          },
+        });
+      }
+  
+      return await this.wsh.handleWebSocketUpgrade(request, topicId);
   }
 }
+
+

@@ -1,3 +1,5 @@
+import { RequestHandler } from "./CommonTypes";
+
 export class WebSocketHelper {
   constructor() {
     this.sessions = new Array<Session>();
@@ -10,8 +12,6 @@ export class WebSocketHelper {
   messageHandlers: Array<MessageHandler>;
   errorHandlers: Array<ErrorHandler>;
   closeHandlers: Array<CloseHandler>;
-
-  
 
   async handleWebSocketUpgrade(request: Request, clientId: string) {
     if (request.headers.get("Upgrade") !== "websocket") {
@@ -43,6 +43,8 @@ export class WebSocketHelper {
         eh(error, session);
       });
     });
+
+    return new Response(null, { status: 101, webSocket: pair[0] });
   }
 
   addMessageListener(handler: MessageHandler) {
@@ -97,7 +99,6 @@ export class WebSocketHelper {
 export type MessageHandler = (message: MessageEvent, session: Session) => void;
 export type CloseHandler = (event: CloseEvent, session: Session) => void;
 export type ErrorHandler = (error: Event, session: Session) => void;
-export type RequestHandler = (request: Request) => Promise<Response>;
 
 export class Session {
   constructor(webSocket: WebSocket, clientId: string) {
@@ -110,23 +111,30 @@ export class Session {
   quit: boolean;
 }
 
-export async function handleWebSocketError (requestHandler: RequestHandler, request: Request) {
-  try {
-    return await requestHandler(request);
-  } catch (err) {
-    if (request.headers.get("Upgrade") == "websocket") {
-      const data = {
-        ERROR: {
-          message: err.message,
-          stack: err.stack,
-          description: err.description,
-        },
-      };
+export function wrapForWebSocketError(requestHandler: any) {
+  const wrapped: RequestHandler = async (request: any) => {
+    try {
+      return await requestHandler(request);
+    } catch (err) {
+      if (request.headers.get("Upgrade") == "websocket") {
+        const data = {
+          WEB_SOCKET_ERROR: {
+            message: err.message,
+            stack: err.stack,
+            description: err.description,
+          },
+        };
 
-      const pair = new WebSocketPair();
-      pair[1].accept();
-      pair[1].send(JSON.stringify(data));
-      pair[1].close(1011, 'Uncaught exception during session setup');
+        const pair = new WebSocketPair();
+        pair[1].accept();
+        pair[1].send(JSON.stringify(data));
+        pair[1].close(1011, "Uncaught exception during session setup");
+        return new Response(JSON.stringify(data), { status: 500 });
+      } else {
+        throw err;
+      }
     }
-  }
+  };
+
+  return wrapped; 
 }
